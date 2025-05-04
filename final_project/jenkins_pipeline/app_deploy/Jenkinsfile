@@ -1,0 +1,33 @@
+pipeline {
+  agent any
+
+  environment {
+    IMAGE = "project/NT548"
+    TAG = "latest"
+  }
+
+  stages {
+    stage('Build Docker Image') {
+      steps {
+        sh 'docker build -t $IMAGE:$TAG -f Dockerfile .'
+      }
+    }
+
+    stage('Push to DockerHub') {
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+          sh """
+            echo $PASSWORD | docker login -u $USERNAME --password-stdin
+            docker push $IMAGE:$TAG
+          """
+        }
+      }
+    }
+
+    stage('Deploy to K8s with Kustomize') {
+      steps {
+        sh 'kubectl apply -k k8s/kustomize'
+      }
+    }
+  }
+}

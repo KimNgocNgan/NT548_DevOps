@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: NT548
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: NT548
+  template:
+    metadata:
+      labels:
+        app: NT548
+    spec:
+      containers:
+        - name: NT548
+          image: NT548 # patch bởi kustomize
+          ports:
+            - containerPort: 80

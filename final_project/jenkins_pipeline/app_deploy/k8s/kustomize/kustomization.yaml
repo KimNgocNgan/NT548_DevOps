@@ -1,0 +1,7 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+images:
+  - name: NT548
+    newName: project/NT548
+    newTag: latest
